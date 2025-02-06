@@ -22,7 +22,7 @@ public class App {
                 break;
             }
 
-            String link = "http://api.openweathermap.org/data/2.5/weather?q=" + input + "&APPID=ff7f22463aef23ef6d3d620fb0868653";
+            String link = "http://api.openweathermap.org/data/2.5/weather?q=" + input + "&APPID=";
             String apiCall = getHTML(link);
             if (apiCall.equals("invalid")) {
                 System.out.println("Invalid Name or Error, please re-enter the city name");
