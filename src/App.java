@@ -5,21 +5,33 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
-        String apiKey = "";
-        String city = "London";
-        String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=1&appid=" + apiKey;
-        String s = getHTML(url);
-        Map<String, String> geoMap = parseJson(s);
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
 
-        for (Map.Entry<String, String> entry : geoMap.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            System.out.println( key + " : " + value);
+        while (true) {
+            System.out.print("Enter City Name (Enter 'Quit' to Exit): ");
+            input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("quit")) {
+                break;
+            }
+
+            String link = "http://api.openweathermap.org/data/2.5/weather?q=" + input + "&APPID=ff7f22463aef23ef6d3d620fb0868653";
+            String apiCall = getHTML(link);
+            if (apiCall.equals("invalid")) {
+                System.out.println("Invalid Name or Error, please re-enter the city name");
+                continue;
+            }
+            String temperature = getValue("temp", apiCall);
+            double num = Double.parseDouble(temperature);
+            num = num - 273.15;
+            System.out.println("The temperature in " + input + " is " + String.format("%.2f", num) + " degrees Celcius");
         }
     }
 
@@ -45,7 +57,7 @@ public class App {
                 scanner.close();
                 return sb.toString();
             } else {
-                return "invalid" + responseCode;
+                return "invalid";
             }
         } catch (MalformedURLException e) {
             System.out.println("Malformed URL: " + e.getMessage());
@@ -58,20 +70,15 @@ public class App {
         return "";
     }
 
-    public static Map<String, String> parseJson(String json) {
-        String cleanedUp = json.trim().replaceAll("[{}\"]", "");
-        String[] pairings = cleanedUp.split(",");
+    public static String getValue(String key, String json) {
+        int index = json.indexOf("\"" + key + "\":");
+        int offset = index + key.length() + 3;
+        int i = offset;
 
-        Map<String, String> map = new HashMap<>();
-
-        for (String pair : pairings) {
-            String[] entry = pair.split(":");
-            String key = entry[0].trim();
-            String value = entry[1].trim();
-
-            map.put(key, value);
+        while (json.charAt(i) != ',') {
+            i++;
         }
 
-        return map;
+        return json.substring(offset, i);
     }
 }
