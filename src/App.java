@@ -19,13 +19,8 @@ public class App {
                 break;
             }
 
-<<<<<<< HEAD
             String link = "http://api.openweathermap.org/data/2.5/weather?q=" + input + "&APPID=ff7f22463aef23ef6d3d620fb0868653";
             String apiCall = getWeather(link);
-=======
-            String link = "http://api.openweathermap.org/data/2.5/weather?q=" + input + "&APPID=";
-            String apiCall = getHTML(link);
->>>>>>> 4dc0ef3ae18deb298517a7aae4fb2ce7f12360eb
             if (apiCall.equals("invalid")) {
                 System.out.println("Invalid Name or Error, please re-enter the city name");
                 continue;
